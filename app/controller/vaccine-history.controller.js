@@ -20,17 +20,12 @@ exports.findById = (req, res) => {
 };
 
 exports.findByChild = (req, res) => {
-	db.sequelize.query("SELECT vh.id, vh.date, vh.weight, vh.height, vh.comment, v.name as vaccine, c.name as child FROM vaccine_history vh "+
-					   "JOIN vaccine v ON vh.id_vaccine = v.id join child c ON vh.id_child = c.id", 
-					   { replacements: 
-						{ 
-							where: {
-								id: req.params.id
-							  }
-					     }, type: db.sequelize.QueryTypes.SELECT
-				       })
-	.then(vaccineHistories => {
-		console.log(vaccineHistories)
+	db.sequelize.query("SELECT vh.id, vh.date, vh.weight, vh.height, vh.comment, v.id as vaccine_id, v.name as vaccine_name FROM vaccine_history vh "+
+					   "JOIN vaccine v ON vh.id_vaccine = v.id join child c ON vh.id_child = c.id WHERE vh.id_child = :id", 
+									
+					   { replacements: { id: req.params.id }, type: db.sequelize.QueryTypes.SELECT }
+										  
+	).then(vaccineHistories => {
 	  res.send(vaccineHistories);
 	})
 };
